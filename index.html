@@ -1,157 +1,157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quiz Card — Perfil de Design</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Design</title>
   <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#6ee7b7;--muted:#94a3b8;--glass:rgba(255,255,255,0.04)}
-    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{margin:0;background:linear-gradient(180deg,#071126 0%, #0b1220 100%);color:#e6eef8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-    .wrap{width:100%;max-width:680px}
-    h1{font-size:22px;margin-bottom:6px}
-    p.lead{margin:0 0 18px;color:var(--muted);font-size:14px}
-
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:14px;padding:20px;box-shadow:0 6px 24px rgba(2,6,23,0.6);}
-
-    .question{padding:10px}
-    .qtitle{margin-bottom:14px;font-size:16px;font-weight:600}
-    .options{display:flex;flex-direction:column;gap:10px}
-    .option{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s}
-    .option .letter{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-weight:700}
-    .option:hover{background:rgba(110,231,183,0.08)}
-    .option.selected{border-color:var(--accent);background:rgba(110,231,183,0.08)}
-
-    button{margin-top:16px;width:100%;background:var(--accent);border:0;padding:12px 16px;border-radius:10px;color:#052225;font-weight:700;cursor:pointer;transition:.15s}
-    button:hover{opacity:.9}
-
-    .results{margin-top:12px;padding:16px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
-    .bars{display:flex;gap:8px;margin-top:12px}
-    .bar{flex:1;background:rgba(255,255,255,0.05);height:10px;border-radius:6px;overflow:hidden}
-    .bar > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#6ee7b7,#60a5fa);transition:width .7s}
-
-    .chip{padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);font-size:13px;margin-top:8px;display:inline-block}
-    .note{margin-top:12px;color:var(--muted);font-size:13px}
+    body{
+      background:#0f172a;
+      color:#f8fafc;
+      font-family:Arial, sans-serif;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding:30px;
+      min-height:100vh;
+    }
+    .container{
+      max-width:600px;
+      width:100%;
+    }
+    .card{
+      background:#1e293b;
+      padding:24px;
+      border-radius:14px;
+      box-shadow:0 4px 12px rgba(0,0,0,.4);
+      margin-bottom:20px;
+      display:none;
+      animation:fadeIn .4s ease;
+    }
+    .card.active{
+      display:block;
+    }
+    .question{
+      font-size:1.2rem;
+      margin-bottom:16px;
+    }
+    .options button{
+      display:block;
+      width:100%;
+      text-align:left;
+      margin:6px 0;
+      padding:10px 14px;
+      background:#334155;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      transition:background .2s;
+    }
+    .options button:hover{
+      background:#475569;
+    }
+    .btn{
+      margin-top:16px;
+      background:#3b82f6;
+      border:none;
+      color:#fff;
+      padding:10px 18px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+    .result-title{
+      font-size:1.4rem;
+      font-weight:bold;
+      margin-bottom:12px;
+    }
+    .percent{
+      font-size:2rem;
+      font-weight:bold;
+    }
+    .progress-large{
+      height:16px;
+      background:rgba(255,255,255,0.08);
+      border-radius:10px;
+      overflow:hidden;
+      margin:16px 0;
+    }
+    .progress-fill{
+      height:100%;
+      width:0%;
+      transition:width .8s ease;
+      background:linear-gradient(90deg,#6ee7b7,#60a5fa);
+    }
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(8px)}
+      to{opacity:1; transform:translateY(0)}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Quiz — Você tem perfil para Design?</h1>
-    <p class="lead">Responda 10 perguntas. Cada pergunta aparece em um card. No final você verá sua probabilidade.</p>
+<div class="container">
+  <h2>Quiz — Você tem perfil para Design?</h2>
+  <p>Responda 10 perguntas. Cada pergunta aparece em um card. No final você verá sua probabilidade.</p>
 
-    <main class="card" id="quiz-card">
-      <div id="questionArea"></div>
-    </main>
+  <div id="quiz"></div>
+  <div id="resultArea" class="card"></div>
+</div>
 
-    <section id="resultArea" class="results" style="display:none">
-      <h3 id="resultTitle">Resultado</h3>
-      <div id="percent" style="font-size:28px;font-weight:800;margin-top:6px">0%</div>
-      <div class="bars">
-        <div class="bar"><i id="barA"></i></div>
-        <div class="bar"><i id="barB"></i></div>
-        <div class="bar"><i id="barC"></i></div>
-        <div class="bar"><i id="barD"></i></div>
-      </div>
-      <div>
-        <span class="chip">A: <span id="countA">0</span></span>
-        <span class="chip">B: <span id="countB">0</span></span>
-        <span class="chip">C: <span id="countC">0</span></span>
-        <span class="chip">D: <span id="countD">0</span></span>
-      </div>
-      <p class="note" id="explain"></p>
-    </section>
-  </div>
+<script>
+const questionsData = [
+  {q:"Você gosta de trabalhar com cores e formas?", options:["Sim, adoro","Mais ou menos","Prefiro lógica","Não gosto"]},
+  {q:"Você tem interesse em tipografia?", options:["Muito","Algum","Pouco","Nenhum"]},
+  {q:"Prefere organizar layouts ou escrever algoritmos?", options:["Layouts","Ambos","Algoritmos","Nenhum"]},
+  {q:"Costuma usar softwares gráficos (Figma, Photoshop)?", options:["Sim, sempre","Às vezes","Raramente","Nunca"]},
+  {q:"Gosta de pensar na experiência do usuário?", options:["Sim","Talvez","Pouco","Não"]},
+  {q:"Você se sente criativo?", options:["Muito","Médio","Pouco","Não"]},
+  {q:"Prefere aulas de artes ou de matemática?", options:["Artes","Ambos","Matemática","Nenhum"]},
+  {q:"Você gosta de observar design em sites/apps?", options:["Sim, bastante","Às vezes","Pouco","Nunca"]},
+  {q:"Você já criou algo visual por hobby?", options:["Sim, várias","Algumas","Poucas","Nunca"]},
+  {q:"Se tivesse que escolher uma carreira, qual mais atrai?", options:["Design","Ambas","Programação","Nenhuma"]}
+];
 
-  <script>
-    const questionsData = [
-      {q: 'Quando você cria algo, você costuma se preocupar mais com:', o:['a) Aparência e estética','b) Usabilidade','c) Performance/funcionamento','d) Não tenho certeza/nenhum']} ,
-      {q: 'Você prefere trabalhar com:', o:['a) Ferramentas de design (Figma/Sketch)','b) Prototipação e testes','c) Lógica e código','d) Atendimento/gestão']},
-      {q: 'Ao ver um site, o que chama mais atenção?', o:['a) Layout e tipografia','b) Organização do conteúdo','c) Velocidade de carregamento','d) Marca/empresa']},
-      {q: 'Em projetos, você gosta de:', o:['a) Explorar cores e formas','b) Testar com usuários reais','c) Escrever scripts e automatizar','d) Documentar processos']},
-      {q: 'Você aprende melhor por:', o:['a) Observação de exemplos visuais','b) Exercícios práticos mediados','c) Leitura técnica e tutoriais','d) Conversando com outras pessoas']},
-      {q: 'Seu ambiente ideal de trabalho é:', o:['a) Estúdio criativo e livre','b) Time multidisciplinar','c) Laboratório técnico','d) Ambiente corporativo organizado']},
-      {q: 'Se tivesse que escolher uma disciplina, seria:', o:['a) Tipografia e teoria das cores','b) UX e pesquisa com usuários','c) Algoritmos e estruturas de dados','d) Negócios e marketing']},
-      {q: 'Ao resolver um problema, você:', o:['a) Rabisca várias ideias visuais','b) Faz protótipos para testar','c) Planeja a solução em etapas lógicas','d) Consulta outras pessoas e referências']},
-      {q: 'Qual ferramenta você acha mais interessante?', o:['a) Figma/Illustrator','b) Maze/Hotjar','c) VSCode/Chrome DevTools','d) Excel/Notion']},
-      {q: 'Você se vê daqui a 5 anos:', o:['a) Trabalhando com design visual/produto','b) Liderando projetos de produto','c) Sendo um especialista técnico','d) Em funções administrativas/comerciais']}
-    ];
+const weights = {0:0.95, 1:0.7, 2:0.4, 3:0.1};
+let answers = [];
+let current = 0;
 
-    const letterWeight = {a:0.95, b:0.7, c:0.28, d:0.08};
-    let currentIndex = 0;
-    const answers = [];
+function renderQuestion(i){
+  const q = questionsData[i];
+  return `<div class="card ${i===0?'active':''}" id="card${i}">
+    <div class="question">${i+1}. ${q.q}</div>
+    <div class="options">
+      ${q.options.map((opt,idx)=>`<button onclick="selectAnswer(${i},${idx})">${String.fromCharCode(65+idx)}) ${opt}</button>`).join('')}
+    </div>
+  </div>`;
+}
 
-    const questionArea = document.getElementById('questionArea');
+document.getElementById('quiz').innerHTML = questionsData.map((q,i)=>renderQuestion(i)).join('');
 
-    function renderQuestion(){
-      if(currentIndex >= questionsData.length){
-        showResults();
-        return;
-      }
+function selectAnswer(qIdx,optIdx){
+  answers[qIdx]=optIdx;
+  document.getElementById(`card${qIdx}`).classList.remove('active');
+  if(qIdx+1<questionsData.length){
+    document.getElementById(`card${qIdx+1}`).classList.add('active');
+  }else{
+    showResults();
+  }
+}
 
-      const q = questionsData[currentIndex];
-      questionArea.innerHTML = `
-        <div class="question">
-          <div class="qtitle">Q${currentIndex+1}. ${q.q}</div>
-          <div class="options">
-            ${q.o.map((text,i)=>{
-              const val = ['a','b','c','d'][i];
-              return `<div class=\"option\" data-val=\"${val}\"><div class=\"letter\">${val.toUpperCase()}</div><div>${text}</div></div>`;
-            }).join('')}
-          </div>
-        </div>
-      `;
+function showResults(){
+  let total=0;
+  answers.forEach(a=> total+=weights[a]);
+  const percent = Math.round((total/answers.length)*100);
 
-      document.querySelectorAll('.option').forEach(opt=>{
-        opt.addEventListener('click',()=>{
-          document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
-          opt.classList.add('selected');
-        });
-      });
-
-      const btn = document.createElement('button');
-      btn.textContent = currentIndex === questionsData.length-1 ? 'Finalizar' : 'Continuar';
-      btn.addEventListener('click', ()=>{
-        const selected = document.querySelector('.option.selected');
-        if(!selected) return alert('Escolha uma opção!');
-        answers.push(selected.dataset.val);
-        currentIndex++;
-        renderQuestion();
-      });
-      questionArea.appendChild(btn);
-    }
-
-    renderQuestion();
-
-    function showResults(){
-      document.getElementById('quiz-card').style.display = 'none';
-      const counts = {a:0,b:0,c:0,d:0};
-      answers.forEach(ans=>counts[ans]++);
-
-      document.getElementById('countA').textContent = counts.a;
-      document.getElementById('countB').textContent = counts.b;
-      document.getElementById('countC').textContent = counts.c;
-      document.getElementById('countD').textContent = counts.d;
-
-      ['A','B','C','D'].forEach(L=>{
-        const w = Math.round((counts[L.toLowerCase()]/questionsData.length)*100);
-        document.getElementById('bar'+L).style.width = w+'%';
-      });
-
-      const avg = answers.map(a=>letterWeight[a]).reduce((s,n)=>s+n,0)/answers.length;
-      const percent = Math.round(avg*100);
-      document.getElementById('percent').textContent = percent+'%';
-      const title = percent >= 75 ? 'Alta afinidade com Design' : percent >= 50 ? 'Boa afinidade' : percent >= 30 ? 'Afinidade moderada' : 'Pouca afinidade detectada';
-      document.getElementById('resultTitle').textContent = title;
-
-      let explanation = '';
-      if(percent >= 75) explanation = 'Você tende a preferir estética, tipografia e ferramentas de design — ótimo sinal para carreira em design visual.';
-      else if(percent >= 50) explanation = 'Você combina bem habilidades visuais e práticas — pode se encaixar em design de produto/UX.';
-      else if(percent >= 30) explanation = 'Há sinais de interesse, mas precisa fortalecer habilidades visuais.';
-      else explanation = 'Seu perfil parece mais técnico/administrativo; se deseja design, sugiro cursos práticos e portfólio.';
-      document.getElementById('explain').textContent = explanation;
-
-      document.getElementById('resultArea').style.display = 'block';
-    }
-  </script>
+  const area=document.getElementById('resultArea');
+  area.innerHTML=`
+    <div class="result-title">${percent>=70?"Alta afinidade com Design":"Afinidade moderada/baixa"}</div>
+    <div class="percent">${percent}%</div>
+    <div class="progress-large"><div id="progressFill" class="progress-fill"></div></div>
+    <p>${percent>=70?"Você tende a preferir estética, tipografia e ferramentas de design — ótimo sinal para carreira em design visual.":"Você demonstra interesse parcial em design. Talvez combine bem com áreas técnicas e criativas."}</p>
+  `;
+  area.classList.add('active');
+  setTimeout(()=>{document.getElementById('progressFill').style.width=percent+'%';},100);
+}
+</script>
 </body>
 </html>
